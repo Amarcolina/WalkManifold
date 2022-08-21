@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fc0cf11dead2aa4dbdf03357f54a033, type: 3}
   m_Name: Manifold Settings
   m_EditorClassIdentifier: 
-  _agentHeight: 1.45
+  _agentHeight: 2
   _agentRadius: 0.25
   _stepHeight: 0.47
-  _maxSurfaceAngle: 46
+  _maxSurfaceAngle: 44
   _cellSize: 0.2
   _edgeReconstruction: 1
   _cornerReconstruction: 1

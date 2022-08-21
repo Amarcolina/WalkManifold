@@ -163,8 +163,7 @@ namespace WalkManifold {
 
     /// <summary>
     /// Returns whether or not the Manifold is currently in the middle of an update.
-    /// If this is true, then certain operations like updating the settings cannot take
-    /// place.
+    /// If this is true, then certain operations like making a query.
     /// </summary>
     public bool IsUpdating => CurrentUpdateStep != UpdateStep.Cleared && CurrentUpdateStep != UpdateStep.Complete;
 
@@ -197,11 +196,6 @@ namespace WalkManifold {
     /// </summary>
     public void Update(int2 updateRangeMin, int2 updateRangeMax, float floorMin, float floorMax) {
       using (new ProfilerScope("Manifold.Update")) {
-        if (Settings == null) {
-          throw new InvalidOperationException("Cannot Update a Manifold while it has an unassigned Settings property.");
-        }
-        _settings = Settings.GetValueType();
-
         if (!Physics.autoSyncTransforms && Settings.SyncPhysicsOnUpdate) {
           using (new ProfilerScope("Sync Transforms")) {
             Physics.SyncTransforms();
@@ -235,10 +229,6 @@ namespace WalkManifold {
                                   float floorMin, float floorMax,
                                   int cellBatchSize = 48,
                                   CancellationToken token = default) {
-      if (Settings == null) {
-        throw new InvalidOperationException("Cannot Update a Manifold while it has an unassigned Settings property.");
-      }
-      _settings = Settings.GetValueType();
       var partialRings = new NativeList<PartialRing>(32, Allocator.Persistent);
 
       try {
@@ -310,6 +300,14 @@ namespace WalkManifold {
     /// </summary>
     public void PartialUpdateCreatePoles(int2 updateRangeMin, int2 updateRangeMax, float floorMin, float floorMax) {
       using (new ProfilerScope("Create Poles")) {
+        //Remember to copy the referenced settings if this is the first time we are updating poles
+        if (CurrentUpdateStep == UpdateStep.Cleared) {
+          if (Settings == null) {
+            throw new InvalidOperationException("Cannot Update a Manifold while it has an unassigned Settings property.");
+          }
+          _settings = Settings.GetValueType();
+        }
+
         AssertUpdateOrder(UpdateStep.CreatePoles);
 
         for (int x = updateRangeMin.x; x < updateRangeMax.x; x++) {
@@ -546,7 +544,7 @@ namespace WalkManifold {
                              Vector3.down,
                              out var hit,
                              rayOrigin.y - floorMin,
-                             _settings.RelevantLayers, 
+                             _settings.RelevantLayers,
                              QueryTriggerInteraction.Ignore)) {
           break;
         }
@@ -731,7 +729,7 @@ namespace WalkManifold {
             !Physics.CheckCapsule(hit.point + _settings.CapsuleOffsetA,
                                   hit.point + _settings.CapsuleOffsetB,
                                   _settings.AgentRadius,
-                                  _settings.RelevantLayers, 
+                                  _settings.RelevantLayers,
                                   QueryTriggerInteraction.Ignore)) {
           trueEdgePoint = hit.point;
           fraction += stepSize;
