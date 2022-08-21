@@ -26,7 +26,7 @@ To open the demo yourself, simply clone the repo and open the Project using Unit
 ## How To Install
 A few different ways you can install this into your own project:
 
-1) Use the latest unitypackage from the release page to install it into your project.
+1) Use the latest unitypackage from the [release page](https://github.com/Amarcolina/WalkManifold/releases) to install it into your project.
 
 2) The package is located in this repo at `Packages/com.walkmanifold`, you can simply copy this directly into your own project (also at Packages/com.walkmanifold) if you want to keep a local copy.
 
