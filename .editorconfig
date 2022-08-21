@@ -1,0 +1,32 @@
+# Social VR Facebook style.  Based mostly on Facebook C++ style
+
+# Topmost .editorconfig
+root = true
+
+[*]
+indent_style = space
+
+[*.editorconfig]
+end_of_line = lf
+
+[*.cs]
+indent_size = 2
+insert_final_newline = true
+charset = utf-8
+
+# Newline settings
+csharp_new_line_before_open_brace = false
+csharp_new_line_before_else = false
+csharp_new_line_before_catch = false
+csharp_new_line_before_finally = false
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+
+# These don't actually work in Visual Studio, but might in some editors
+rulers = 100
+text_width = 100
+line_width = 100
+
+# This could probably go in [*].  But I hate having it at all.
+# Source control should be dealing with this, not editors.
+end_of_line = lf

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fc0cf11dead2aa4dbdf03357f54a033, type: 3}
+  m_Name: ManifoldSettings_CellSize
+  m_EditorClassIdentifier: 
+  _agentHeight: 4.1
+  _agentRadius: 0.75
+  _stepHeight: 0.54
+  _maxSurfaceAngle: 45
+  _cellSize: 0.2
+  _edgeReconstruction: 1
+  _cornerReconstruction: 1
+  _reconstructionIterations: 6
+  _walkableLayers:
+    serializedVersion: 2
+    m_Bits: 1
+  _blockingLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  _syncPhysicsOnUpdate: 1
