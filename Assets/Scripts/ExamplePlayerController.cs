@@ -50,7 +50,9 @@ public class ExamplePlayerController : MonoBehaviour {
       _controller.SimpleMove(moveDir * (Input.GetKey(KeyCode.LeftShift) ? SprintSpeed : WalkSpeed));
     }
 
-    Head.position = Vector3.Lerp(prevHeadPos, Head.position, 1.0f - HeadDamping);
+    Vector3 newHeadPosition = Head.position;
+    newHeadPosition.y = Mathf.Lerp(prevHeadPos.y, newHeadPosition.y, 1.0f - HeadDamping);
+    Head.position = newHeadPosition;
 
     if (Application.isFocused) {
       transform.Rotate(0, Input.GetAxis("Mouse X") * MouseSensitivity, 0);
