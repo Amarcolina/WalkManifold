@@ -50,7 +50,7 @@ namespace WalkManifold.Internals {
           float3 point;
 
           float d = dot(v1 - v0, v1 - v0);
-          if (d < Mathf.Epsilon) {
+          if (d <= EPSILON) {
             point = v0;
           } else {
             float t = dot(Position - v0, v1 - v0) / d;
@@ -131,7 +131,7 @@ namespace WalkManifold.Internals {
 
     public static float invlerp(float a, float b, float value) {
       float d = b - a;
-      if (abs(d) < Mathf.Epsilon) {
+      if (abs(d) <= EPSILON) {
         return 0;
       } else {
         return (value - a) / d;
