@@ -4,8 +4,8 @@
 [Try The WebGL Demo Yourself Here](https://amarcolina.github.io/WalkManifold/)
 
 Walk Manifold is a library used for Agent movement that targets a specific kind of game/use case. It is based on the technique described by Casey Muratori in his video ["Killing The Walk Monster"](https://www.youtube.com/watch?v=YE8MVNMzpbo). It provides the following features which are not usually provided by movement systems:
- - **Guaranteed Reversibility**: Impossible to create a situation where the player can move _into_ a space, but cannot then get back out. No longer need to worry about accidentally creating spaces that can trap the player.
- - **Walkable Surface Visualization**: Visualize the _exact_ walkable area during edit-time and run-time, full-stop. You get to see exactly where the player can stand, _in addition_ to exactly where they can _get to_. This allows you to trivially find accidental 'holes' left while building a level that allows a player to get where they shouldn't.
+ - **[Guaranteed Reversibility](https://github.com/Amarcolina/WalkManifold/edit/main/README.md#thoughts-on-reversibility)**: Impossible to create a situation where the player can move _into_ a space, but cannot then get back out. No longer need to worry about accidentally creating spaces that can trap the player.
+ - **[Walkable Surface Visualization](https://github.com/Amarcolina/WalkManifold#visualization-tools)**: Visualize the _exact_ walkable area during edit-time and run-time, full-stop. You get to see exactly where the player can stand, _in addition_ to exactly where they can _get to_. This allows you to trivially find accidental 'holes' left while building a level that allows a player to get where they shouldn't.
 
 In addition to these novel features, it also has many of the basic features you would expect from a movement system:
  - **Agent Height/Radius Config**: Move the player only where a capsule with a given height/radius can fit. Prevents moving too close to a wall, or under a too-low overhang.
