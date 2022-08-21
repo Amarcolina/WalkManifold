@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Unity.Mathematics;
 
@@ -18,6 +19,15 @@ namespace WalkManifold {
 
     protected void Start() {
       _history = new PositionHistory(transform.position, 20, 1);
+    }
+
+    /// <summary>
+    /// Can be called to reset the memory of the controller to only include the current
+    /// position.  Can be useful if you want to guarantee that positional rewinding doesn't
+    /// include previous positions.
+    /// </summary>
+    public void ResetPositionHistory() {
+      _history.Reset(transform.position);
     }
 
     public void SimpleMove(Vector3 direction) {
@@ -47,8 +57,9 @@ namespace WalkManifold {
       if (!TryFindNextPosition(src, dst, extrude: 1, out result) &&
           !TryFindPositionInHistory(out result)) {
         //If all of this fails, we panic, as we have no idea where the player should be
-        //on the surface anymore.
-        throw new System.Exception("big panic");
+        //on the surface anymore.  The user will need to manually place the character somewhere
+        //valid.
+        throw new InvalidOperationException("Could not find walkable surface.");
       }
 
       _currentFloor = result.Collider;
