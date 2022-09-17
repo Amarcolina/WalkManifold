@@ -68,7 +68,7 @@ namespace WalkManifold {
       _floorLocalForward = _currentFloor.transform.InverseTransformDirection(transform.forward);
       _worldSpaceForward = transform.forward;
 
-      if (_currentFloor.gameObject.isStatic && Vector3.Distance(_history.Buffer[0], transform.position) > Settings.CellSize) {
+      if (Vector3.Distance(_history.Buffer[0], transform.position) > Settings.CellSize) {
         _history.Push(transform.position);
       }
     }
