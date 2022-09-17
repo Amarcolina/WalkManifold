@@ -1,9 +1,9 @@
 # Walk Manifold
-[![Demo Video](https://i.imgur.com/yt0x2q3.png)](https://www.youtube.com/watch?v=0C_UjfXC6t4)
+[![Demo Video](https://i.imgur.com/yt0x2q3.png)](https://www.youtube.com/watch?v=EgZ6vqyVKFw)
 
 [Try The WebGL Demo Yourself Here](https://amarcolina.github.io/WalkManifold/)
 
-Walk Manifold is a library used for Agent movement that targets a specific kind of game/use case. It is based on the technique described by Casey Muratori in his video ["Killing The Walk Monster"](https://www.youtube.com/watch?v=YE8MVNMzpbo). It provides the following features which are not usually provided by movement systems:
+Walk Manifold is a Unity-Engine library used for Agent movement that targets a specific kind of game/use case. It is based on the technique described by Casey Muratori in his video ["Killing The Walk Monster"](https://www.youtube.com/watch?v=YE8MVNMzpbo). It provides the following features which are not usually provided by movement systems:
  - **[Guaranteed Reversibility](https://github.com/Amarcolina/WalkManifold/edit/main/README.md#thoughts-on-reversibility)**: Impossible to create a situation where the player can move _into_ a space, but cannot then get back out. No longer need to worry about accidentally creating spaces that can trap the player.
  - **[Walkable Surface Visualization](https://github.com/Amarcolina/WalkManifold#visualization-tools)**: Visualize the _exact_ walkable area during edit-time and run-time, full-stop. You get to see exactly where the player can stand, _in addition_ to exactly where they can _get to_. This allows you to trivially find accidental 'holes' left while building a level that allows a player to get where they shouldn't.
 
@@ -18,7 +18,7 @@ The above features are emphasized at the expense of these other features, which 
 
 This feature set is aimed at the common "Waking Simulator" style game, where you typically don't have movement mechanics other than getting from point A to point B. The guaranteed reversibility can be a critical feature for these kinds of games, where the act of getting stuck can be potentially game-breaking, especially when the game doesn't have mechanics like jumping to get the player out of many situations. The surface visualization is also **very** useful to have in these kinds of games, as many times the entire premise of the puzzle hinges on the players ability to reach certain areas of the map.
 
-## This Repo
+## This Repository
 This repo contains a single Unity project that contains both the library package, as well as a separate demo. The library package is located at `Packages/com.walkmanifold`, check out the `How To Install` section for brief instructions on how to install it. The `Assets/` folder is the Assets folder of a regular Unity project that represents the demo used for this package as well. This demo is a good source of learning on how to use the package, and includes a very basic player movement script that interfaces with the ManifoldCharacterController.
 
 To open the demo yourself, simply clone the repo and open the Project using Unity version 2021.3 LTS.
