@@ -141,7 +141,7 @@ namespace WalkManifold {
     /// current Settings.
     /// </summary>
     public int2 GetCell(float3 pos) {
-      return (int2)floor(pos.xz / _settings.CellSize);
+      return (int2)floor(pos.xz / Settings.CellSize);
     }
 
     /// <summary>
