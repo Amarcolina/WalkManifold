@@ -8,6 +8,7 @@ Walk Manifold is a Unity-Engine library used for Agent movement that targets a s
  - **[Walkable Surface Visualization](https://github.com/Amarcolina/WalkManifold#visualization-tools)**: Visualize the _exact_ walkable area during edit-time and run-time, full-stop. You get to see exactly where the player can stand, _in addition_ to exactly where they can _get to_. This allows you to trivially find accidental 'holes' left while building a level that allows a player to get where they shouldn't.
 
 In addition to these novel features, it also has many of the basic features you would expect from a movement system:
+ - **Fully Real-Time**: The system does not rely on build-time processes, or static objects. It can react fully to changing shapes, moving platforms, opening and closing of doorways, and anything else not usually handled by baked systems like Unity's NavMesh.
  - **Agent Height/Radius Config**: Move the player only where a capsule with a given height/radius can fit. Prevents moving too close to a wall, or under a too-low overhang.
  - **Agent Step-Height**: Allows the player to 'step up' onto features which are a certain height above the current floor level.
  - **Max Standing Angle**: Prevents standing on any surface with a slope greater than a specific angle.
