@@ -11,6 +11,8 @@ namespace WalkManifold {
     public bool RotateWithColliders = false;
 
     private Collider _currentFloor;
+    public Collider CurrentFloor => _currentFloor;
+
     private Vector3 _floorLocalPosition;
     private Vector3 _floorLocalForward;
     private Vector3 _worldSpaceForward;
@@ -83,7 +85,7 @@ namespace WalkManifold {
       return false;
     }
 
-    protected bool TryFindNextPosition(Vector3 from, Vector3 to, int extrude, out ClosestPointResult result) {
+    public bool TryFindNextPosition(Vector3 from, Vector3 to, int extrude, out ClosestPointResult result) {
       float3 min = math.min(from, to);
       float3 max = math.max(from, to);
 
