@@ -9,7 +9,7 @@ namespace WalkManifold.Internals {
   /// on the cell corner.
   /// 
   /// A ring can contain as few as 3 vertices (for truncated corners) or as many as 6
-  /// verticdes (for diagonals), but most contain 4 vertices as most are regular Complete
+  /// vertices (for diagonals), but most contain 4 vertices as most are regular Complete
   /// rings with all four vertices being pole vertices.
   /// </summary>
   [Serializable]

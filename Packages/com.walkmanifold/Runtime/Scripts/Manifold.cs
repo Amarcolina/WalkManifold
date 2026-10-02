@@ -63,7 +63,8 @@ namespace WalkManifold {
 
     /// <summary>
     /// Maps a mesh edge to the ring that contains that edge. You can reverse the edge direction
-    /// to find the connecting ring along an adjacent edge.
+    /// to find the connecting ring along an adjacent edge.  The mapped value is the index of the
+    /// ring in the Rings list.
     /// </summary>
     public NativeHashMap<int2, int> EdgeToRing;
 
@@ -163,7 +164,7 @@ namespace WalkManifold {
 
     /// <summary>
     /// Returns whether or not the Manifold is currently in the middle of an update.
-    /// If this is true, then certain operations like making a query.
+    /// If this is true, then certain operations like making a query will fail.
     /// </summary>
     public bool IsUpdating => CurrentUpdateStep != UpdateStep.Cleared && CurrentUpdateStep != UpdateStep.Complete;
 
@@ -189,15 +190,15 @@ namespace WalkManifold {
     }
 
     /// <summary>
-    /// Update the walkable surface given the precides minimum and maximum cell indices,
+    /// Update the walkable surface given the precise minimum and maximum cell indices,
     /// plus the minimum and maximum floor heights.  The resulting surface will cover every
-    /// specified cell, from the minimum (inclusive) to the maxumum (exclusive).  The
+    /// specified cell, from the minimum (inclusive) to the maximum (exclusive).  The
     /// surface will also contain all valid surfaces between the min and max floor height.
     /// </summary>
     public void Update(int2 updateRangeMin, int2 updateRangeMax, float floorMin, float floorMax) {
       using (new ProfilerScope("Manifold.Update")) {
         if (Settings.SyncPhysicsOnUpdate) {
-          using (new ProfilerScope("Sync Transforms")) {
+          using (new ProfilerScope("Manifold.SyncTransforms")) {
             Physics.SyncTransforms();
           }
         }
@@ -233,7 +234,7 @@ namespace WalkManifold {
 
       try {
         if (Settings.SyncPhysicsOnUpdate) {
-          using (new ProfilerScope("Sync Transforms")) {
+          using (new ProfilerScope("Manifold.SyncTransforms")) {
             Physics.SyncTransforms();
           }
         }
@@ -261,7 +262,7 @@ namespace WalkManifold {
         }
 
         //Don't do partial ring creation async for the built-in async method,
-        //it's so fast that it shouldn't be a big deal
+        //it's so fast that waiting a frame only slows things down.
         PartialUpdateCreatePartialRings(updateRangeMin, updateRangeMax, partialRings);
 
         int sliceBatchSize = max(1, cellBatchSize * cellBatchSize / (1 + _settings.ReconstructionIterations));
@@ -299,7 +300,7 @@ namespace WalkManifold {
     /// it must be created only once.
     /// </summary>
     public void PartialUpdateCreatePoles(int2 updateRangeMin, int2 updateRangeMax, float floorMin, float floorMax) {
-      using (new ProfilerScope("Create Poles")) {
+      using (new ProfilerScope("Manifold.CreatePoles")) {
         //Remember to copy the referenced settings if this is the first time we are updating poles
         if (CurrentUpdateStep == UpdateStep.Cleared) {
           if (Settings == null) {
@@ -308,7 +309,7 @@ namespace WalkManifold {
           _settings = Settings.GetValueType();
         }
 
-        AssertUpdateOrder(UpdateStep.CreatePoles);
+        UpdateStepAndAssert(UpdateStep.CreatePoles);
 
         for (int x = updateRangeMin.x; x < updateRangeMax.x; x++) {
           for (int y = updateRangeMin.y; y < updateRangeMax.y; y++) {
@@ -329,8 +330,8 @@ namespace WalkManifold {
     /// will be appended to the provided list, which will be used in later steps.
     /// </summary>
     public void PartialUpdateCreatePartialRings(int2 updateRangeMin, int2 updateRangeMax, NativeList<PartialRing> partialRings) {
-      using (new ProfilerScope("Create Partial Rings")) {
-        AssertUpdateOrder(UpdateStep.CreatePartialRings);
+      using (new ProfilerScope("Manifold.CreatePartialRings")) {
+        UpdateStepAndAssert(UpdateStep.CreatePartialRings);
 
         new CreatePartialRingsJob() {
           Vertices = Vertices.AsArray(),
@@ -355,8 +356,8 @@ namespace WalkManifold {
     /// will populate the internal Rings structure with the generated rings.
     /// </summary>
     public void PartialUpdateReconstructRings(NativeSlice<PartialRing> partialRings) {
-      using (new ProfilerScope("Reconstruct Rings")) {
-        AssertUpdateOrder(UpdateStep.ReconstructRings);
+      using (new ProfilerScope("Manifold.ReconstructRings")) {
+        UpdateStepAndAssert(UpdateStep.ReconstructRings);
 
         for (int i = 0; i < partialRings.Length; i++) {
           var partialRing = partialRings[i];
@@ -398,8 +399,8 @@ namespace WalkManifold {
     /// the edge connectivity structure that allows rings to find their neighbors.
     /// </summary>
     public void PartialUpdateConnectEdges() {
-      using (new ProfilerScope("Connect Edges")) {
-        AssertUpdateOrder(UpdateStep.ConnectEdges);
+      using (new ProfilerScope("Manifold.ConnectEdges")) {
+        UpdateStepAndAssert(UpdateStep.ConnectEdges);
 
         new ConnectRingEdgesJob() {
           Rings = Rings.AsArray(),
@@ -418,7 +419,7 @@ namespace WalkManifold {
       }
     }
 
-    public void AssertUpdateOrder(UpdateStep step) {
+    public void UpdateStepAndAssert(UpdateStep step) {
       if (CurrentUpdateStep > step) {
         throw new InvalidOperationException("Incorrect partial update order.  Calls must be made in the following order:\n" +
                                             $"{nameof(Clear)}\n" +
@@ -451,18 +452,18 @@ namespace WalkManifold {
       AssertHasBeenUpdated(nameof(FindClosestRingIndex));
 
       var resultArr = new NativeArray<int>(1, Allocator.TempJob);
+      try {
+        new FindClosestRingJob() {
+          Vertices = Vertices.AsArray(),
+          Rings = Rings.AsArray(),
+          Position = position,
+          ClosestRingIndexResult = resultArr
+        }.Run();
 
-      new FindClosestRingJob() {
-        Vertices = Vertices.AsArray(),
-        Rings = Rings.AsArray(),
-        Position = position,
-        ClosestRingIndexResult = resultArr
-      }.Run();
-
-      var result = resultArr[0];
-      resultArr.Dispose();
-
-      return result;
+        return resultArr[0];
+      } finally {
+        resultArr.Dispose();
+      }
     }
 
     /// <summary>
@@ -473,26 +474,28 @@ namespace WalkManifold {
       AssertHasBeenUpdated(nameof(FindClosestPoint));
 
       var resultArr = new NativeArray<ClosestPointResultNative>(1, Allocator.TempJob);
+      try {
+        new FindClosestPointJob() {
+          Vertices = Vertices.AsArray(),
+          Rings = Rings.AsArray(),
+          CellSize = _settings.CellSize,
+          PoleVerticesCount = PoleVerticesCount,
+          Position = position,
+          OnlyMarked = onlyMarked,
+          Result = resultArr,
+        }.Run();
 
-      new FindClosestPointJob() {
-        Vertices = Vertices.AsArray(),
-        Rings = Rings.AsArray(),
-        CellSize = _settings.CellSize,
-        PoleVerticesCount = PoleVerticesCount,
-        Position = position,
-        OnlyMarked = onlyMarked,
-        Result = resultArr,
-      }.Run();
+        var result = resultArr[0];
 
-      var result = resultArr[0];
-      resultArr.Dispose();
-
-      return new ClosestPointResult() {
-        Position = result.Position,
-        Collider = VerticesColliders[result.ClosestPoleVertexIndex],
-        ClosestPoleVertexIndex = result.ClosestPoleVertexIndex,
-        RingIndex = result.RingIndex
-      };
+        return new ClosestPointResult() {
+          Position = result.Position,
+          Collider = VerticesColliders[result.ClosestPoleVertexIndex],
+          ClosestPoleVertexIndex = result.ClosestPoleVertexIndex,
+          RingIndex = result.RingIndex
+        };
+      } finally {
+        resultArr.Dispose();
+      }
     }
 
     /// <summary>
@@ -528,7 +531,7 @@ namespace WalkManifold {
       };
 
       Vector3 rayOrigin = new Vector3(polePos.x, 0, polePos.y) * _settings.CellSize +
-                          Vector3.up * floorMax;
+                          new Vector3(0, floorMax, 0);
 
       while (true) {
         if (rayOrigin.y < floorMin) {
