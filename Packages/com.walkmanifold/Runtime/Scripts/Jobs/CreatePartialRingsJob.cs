@@ -44,7 +44,7 @@ namespace WalkManifold.Internals {
     public NativeList<Ring> Rings;
 
     public NativeList<PartialRing> PartialRings;
-    public NativeMultiHashMap<int2, int> CellToRingIndices;
+    public NativeParallelMultiHashMap<int2, int> CellToRingIndices;
 
     public bool GeneratePartialRings;
 

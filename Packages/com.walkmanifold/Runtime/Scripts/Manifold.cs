@@ -71,7 +71,7 @@ namespace WalkManifold {
     /// Maps a given cell to all of the rings that exist inside that cell.  The mapped value is the
     /// index of the ring in the Rings list.
     /// </summary>
-    public NativeMultiHashMap<int2, int> CellToRingIndices;
+    public NativeParallelMultiHashMap<int2, int> CellToRingIndices;
 
     /// <summary>
     /// Maps a given pole coordinate to the pole structure that was generated at that location.  A pole
@@ -97,7 +97,7 @@ namespace WalkManifold {
       Rings = new NativeList<Ring>(256, Allocator.Persistent);
 
       EdgeToRing = new NativeHashMap<int2, int>(256, Allocator.Persistent);
-      CellToRingIndices = new NativeMultiHashMap<int2, int>(256, Allocator.Persistent);
+      CellToRingIndices = new NativeParallelMultiHashMap<int2, int>(256, Allocator.Persistent);
       CellToPole = new NativeHashMap<int2, Pole>(256, Allocator.Persistent);
       _trueEdgeCache = new NativeHashMap<int3, int>(256, Allocator.Persistent);
     }
@@ -196,7 +196,7 @@ namespace WalkManifold {
     /// </summary>
     public void Update(int2 updateRangeMin, int2 updateRangeMax, float floorMin, float floorMax) {
       using (new ProfilerScope("Manifold.Update")) {
-        if (!Physics.autoSyncTransforms && Settings.SyncPhysicsOnUpdate) {
+        if (Settings.SyncPhysicsOnUpdate) {
           using (new ProfilerScope("Sync Transforms")) {
             Physics.SyncTransforms();
           }
@@ -232,7 +232,7 @@ namespace WalkManifold {
       var partialRings = new NativeList<PartialRing>(32, Allocator.Persistent);
 
       try {
-        if (!Physics.autoSyncTransforms && Settings.SyncPhysicsOnUpdate) {
+        if (Settings.SyncPhysicsOnUpdate) {
           using (new ProfilerScope("Sync Transforms")) {
             Physics.SyncTransforms();
           }
@@ -402,7 +402,7 @@ namespace WalkManifold {
         AssertUpdateOrder(UpdateStep.ConnectEdges);
 
         new ConnectRingEdgesJob() {
-          Rings = Rings,
+          Rings = Rings.AsArray(),
           EdgeToRing = EdgeToRing
         }.Run();
 
@@ -453,8 +453,8 @@ namespace WalkManifold {
       var resultArr = new NativeArray<int>(1, Allocator.TempJob);
 
       new FindClosestRingJob() {
-        Vertices = Vertices,
-        Rings = Rings,
+        Vertices = Vertices.AsArray(),
+        Rings = Rings.AsArray(),
         Position = position,
         ClosestRingIndexResult = resultArr
       }.Run();
@@ -475,8 +475,8 @@ namespace WalkManifold {
       var resultArr = new NativeArray<ClosestPointResultNative>(1, Allocator.TempJob);
 
       new FindClosestPointJob() {
-        Vertices = Vertices,
-        Rings = Rings,
+        Vertices = Vertices.AsArray(),
+        Rings = Rings.AsArray(),
         CellSize = _settings.CellSize,
         PoleVerticesCount = PoleVerticesCount,
         Position = position,
@@ -503,7 +503,7 @@ namespace WalkManifold {
       AssertHasBeenUpdated(nameof(MarkReachable));
 
       new MarkReachableRingsJob() {
-        Rings = Rings,
+        Rings = Rings.AsArray(),
         EdgeToRing = EdgeToRing,
         StartingRingIndex = startingRingIndex
       }.Run();

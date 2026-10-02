@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using WalkManifold;
 
 [RequireComponent(typeof(ManifoldCharacterController))]
@@ -38,16 +39,19 @@ public class ExamplePlayerController : MonoBehaviour {
   private void LateUpdate() {
     if (Time.time < 1) return;
 
-    Vector3 moveDir = transform.right * Input.GetAxis("Horizontal") +
-                      transform.forward * Input.GetAxis("Vertical");
+    Vector3 moveDir = Vector3.zero;
+    moveDir += transform.right * (Keyboard.current.dKey.isPressed ? 1 : 0);
+    moveDir -= transform.right * (Keyboard.current.aKey.isPressed ? 1 : 0);
+    moveDir += transform.forward * (Keyboard.current.wKey.isPressed ? 1 : 0);
+    moveDir -= transform.forward * (Keyboard.current.sKey.isPressed ? 1 : 0);
 
     Vector3 prevHeadPos = Head.position;
     Head.localPosition = _headOrigin;
 
     if (UseCharacterController) {
-      _cc.SimpleMove(moveDir * (Input.GetKey(KeyCode.LeftShift) ? SprintSpeed : WalkSpeed));
+      _cc.SimpleMove(moveDir * (Keyboard.current.leftShiftKey.isPressed ? SprintSpeed : WalkSpeed));
     } else {
-      _controller.SimpleMove(moveDir * (Input.GetKey(KeyCode.LeftShift) ? SprintSpeed : WalkSpeed));
+      _controller.SimpleMove(moveDir * (Keyboard.current.leftShiftKey.isPressed ? SprintSpeed : WalkSpeed));
     }
 
     Vector3 newHeadPosition = Head.position;
@@ -55,9 +59,10 @@ public class ExamplePlayerController : MonoBehaviour {
     Head.position = newHeadPosition;
 
     if (Application.isFocused) {
-      transform.Rotate(0, Input.GetAxis("Mouse X") * MouseSensitivity, 0);
+      var delta = Mouse.current.delta.value;
+      transform.Rotate(0, delta.x * MouseSensitivity, 0);
 
-      _rotation.x = Mathf.Clamp(_rotation.x - Input.GetAxis("Mouse Y") * MouseSensitivity, -85, 85);
+      _rotation.x = Mathf.Clamp(_rotation.x - delta.y * MouseSensitivity, -85, 85);
       Head.localEulerAngles = _rotation;
     }
   }

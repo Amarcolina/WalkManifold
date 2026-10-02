@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using WalkManifold;
 
 public class DemoUIController : MonoBehaviour {
@@ -11,11 +12,11 @@ public class DemoUIController : MonoBehaviour {
   public ManifoldDebugView PlayerGridView;
 
   private void Update() {
-    if (Input.GetKeyDown(KeyCode.G)) {
+    if (Keyboard.current.gKey.wasPressedThisFrame) {
       PlayerGridView.ShowInGameView = !PlayerGridView.ShowInGameView;
     }
 
-    if (Input.GetKeyDown(KeyCode.Space)) {
+    if (Keyboard.current.spaceKey.wasPressedThisFrame) {
       PlayerRoot.SetActive(!PlayerRoot.activeSelf);
       PropertiesRoot.SetActive(!PropertiesRoot.activeSelf);
     }
