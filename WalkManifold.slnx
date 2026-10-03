@@ -1,0 +1,24 @@
+﻿<Solution>
+  <Project Path="Unity.InputSystem.csproj" />
+  <Project Path="Unity.ProBuilder.csproj" />
+  <Project Path="Unity.ProBuilder.Poly2Tri.csproj" />
+  <Project Path="Unity.Searcher.Editor.csproj" />
+  <Project Path="Unity.ProBuilder.Csg.csproj" />
+  <Project Path="Unity.VisualStudio.Editor.csproj" />
+  <Project Path="Unity.ProBuilder.Editor.csproj" />
+  <Project Path="Unity.Postprocessing.Runtime.csproj" />
+  <Project Path="Unity.Postprocessing.Editor.csproj" />
+  <Project Path="Unity.InputSystem.ForUI.csproj" />
+  <Project Path="WalkManifold.csproj" />
+  <Project Path="Unity.ProBuilder.Stl.csproj" />
+  <Project Path="Unity.Settings.Editor.csproj" />
+  <Project Path="Unity.InputSystem.DocCodeSamples.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Unity.ProBuilder.KdTree.csproj" />
+  <Project Path="Unity.ProBuilder.AddOns.Editor.csproj" />
+  <Project Path="Unity.ProBuilder.AssetIdRemapUtility.csproj" />
+  <Project Path="Unity.InputSystem.TestFramework.csproj" />
+  <Project Path="Unity.Profiling.Core.csproj" />
+  <Project Path="Unity.InputSystem.ForUI.Editor.csproj" />
+  <Project Path="WalkManifold.Editor.csproj" />
+</Solution>
