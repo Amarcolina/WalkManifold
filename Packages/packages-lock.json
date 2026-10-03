@@ -1,5 +1,15 @@
 {
   "dependencies": {
+    "com.builderbot.walkmanifold": {
+      "version": "file:com.builderbot.walkmanifold",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.burst": "1.8.30",
+        "com.unity.mathematics": "1.3.2",
+        "com.unity.collections": "6.7.3"
+      }
+    },
     "com.unity.burst": {
       "version": "2.0.0",
       "depth": 1,
@@ -171,16 +181,6 @@
         "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.physics2d": "1.0.0",
         "com.unity.modules.physics": "1.0.0"
-      }
-    },
-    "com.walkmanifold": {
-      "version": "file:com.walkmanifold",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {
-        "com.unity.burst": "1.8.30",
-        "com.unity.mathematics": "1.3.2",
-        "com.unity.collections": "6.7.3"
       }
     },
     "com.unity.modules.animation": {
