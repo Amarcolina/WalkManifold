@@ -191,7 +191,7 @@ namespace WalkManifold {
       }
 
       var ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-      if (Physics.SphereCast(ray, _debugView.Settings.CellSize * CastRadius, out var hit, _debugView.Settings.RelevantLayers)) {
+      if (Physics.SphereCast(ray, _debugView.Settings.CellSize * CastRadius, out var hit, float.MaxValue, _debugView.Settings.RelevantLayers)) {
         _placementPlane = new Plane(Vector3.up, hit.point);
       }
 
